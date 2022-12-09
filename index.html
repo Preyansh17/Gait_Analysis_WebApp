@@ -22,25 +22,40 @@
     </div>
 </body>
 <script>
+    const scp2 = require("scp2");
+
+    const options = {
+        host: "206.189.140.73",
+        username: "root",
+        password: "pA172001A",
+        path: "/root/input.mp4"
+    };
+
+    
+    
     let shouldStop = false;
     let stopped = false;
     const videoElement = document.getElementsByTagName("video")[0];
     const downloadLink = document.getElementById('download');
     const stopButton = document.getElementById('stop');
+    const analyseButton = document.getElementById('analyse');
     function startRecord() {
         $('.btn-info').prop('disabled', true);
         $('#stop').prop('disabled', false);
+        $('#analyse').prop('disabled', false);
         $('#download').css('display', 'none')
     }
     function stopRecord() {
         $('.btn-info').prop('disabled', false);
         $('#stop').prop('disabled', true);
+        $('#analyse').prop('disabled', true);
         $('#download').css('display', 'block')
     }
 
     stopButton.addEventListener('click', function () {
         shouldStop = true;
     });
+    
 
     const handleRecord = function ({stream, mimeType}) {
         startRecord()
@@ -61,8 +76,9 @@
 
         mediaRecorder.onstop = function () {
             const blob = new Blob(recordedChunks, {
-                type: mimeType
+                type: video/mp4
             });
+            let vid = recordedChunks
             recordedChunks = []
             const filename = window.prompt('Enter file name');
             downloadLink.href = URL.createObjectURL(blob);
@@ -73,10 +89,32 @@
 
         mediaRecorder.start(200);
     };
+    
+   analyseButton.addEventListener('click', function () {
+        const blob = new Blob(vid, {
+            type: mimeType
+        });
+       
+       const reader = new FileReader();
+       reader.onload = function() {
+            const buffer = Buffer.from(reader.result);
+            scp2.scp(options, buffer, function(err) {
+                if (err) {
+                    console.error(err);
+                } else {
+                    console.log("Video transferred successfully using SCP.");
+                }
+            });
+        };
+       reader.readAsArrayBuffer(blob);
+       
+   });
 
+
+        
 
     async function recordVideo() {
-        const mimeType = 'video/webm';
+        const mimeType = 'video/mp4';
         shouldStop = false;
         const constraints = {
             audio: {

@@ -65,7 +65,7 @@
 
         mediaRecorder.onstop = function () {
             const blob = new Blob(recordedChunks, {
-                type: video/mp4
+                type: 'video/mp4'
             });
             let vid = recordedChunks
             recordedChunks = []
@@ -81,7 +81,7 @@
     
    analyseButton.addEventListener('click', function () {
         const blob = new Blob(vid, {
-            type: mimeType
+            type: 'video/mp4'
         });
        
         const scp2 = require("scp2");

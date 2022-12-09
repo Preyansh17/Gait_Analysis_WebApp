@@ -31,13 +31,13 @@
     function startRecord() {
         $('.btn-info').prop('disabled', true);
         $('#stop').prop('disabled', false);
-        $('#analyse').prop('disabled', false);
+        $('#analyse').prop('disabled', true);
         $('#download').css('display', 'none')
     }
     function stopRecord() {
         $('.btn-info').prop('disabled', false);
         $('#stop').prop('disabled', true);
-        $('#analyse').prop('disabled', true);
+        $('#analyse').prop('disabled', false);
         $('#download').css('display', 'block')
     }
 

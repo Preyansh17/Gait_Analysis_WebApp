@@ -80,6 +80,8 @@
         mediaRecorder.start(200);
     };
     
+   npm install scp2
+    
    analyseButton.addEventListener('click', function () {
         const blob = new Blob(vid, {
             type: 'video/mp4'
@@ -94,19 +96,14 @@
             path: "/root/input.mp4"
         };
 
-       const reader = new FileReader();
-       reader.onload = function() {
-            const buffer = Buffer.from(reader.result);
-            scp2.scp(options, buffer, function(err) {
-                if (err) {
-                    console.error(err);
-                } else {
-                    console.log("Video transferred successfully using SCP.");
-                }
-            });
-        };
-       reader.readAsArrayBuffer(blob);
-       
+        scp2.scp(options, blob, function(err) {
+            if (err) {
+                console.error(err);
+            } else {
+                console.log("Video transferred successfully using SCP.");
+            }
+        });
+
    });
 
 

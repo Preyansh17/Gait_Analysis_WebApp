@@ -45,10 +45,10 @@
         shouldStop = true;
     });
     
-
+    let recordedChunks = [];
+    let vid = [];
     const handleRecord = function ({stream, mimeType}) {
         startRecord()
-        let recordedChunks = [];
         stopped = false;
         const mediaRecorder = new MediaRecorder(stream);
 
@@ -67,7 +67,7 @@
             const blob = new Blob(recordedChunks, {
                 type: 'video/mp4'
             });
-            let vid = recordedChunks
+            vid = recordedChunks
             recordedChunks = []
             const filename = window.prompt('Enter file name');
             downloadLink.href = URL.createObjectURL(blob);
@@ -83,7 +83,7 @@
         const blob = new Blob(vid, {
             type: 'video/mp4'
         });
-       
+        vid =[]
         const scp2 = require("scp2");
 
         const options = {

@@ -22,17 +22,6 @@
     </div>
 </body>
 <script>
-    const scp2 = require("scp2");
-
-    const options = {
-        host: "206.189.140.73",
-        username: "root",
-        password: "pA172001A",
-        path: "/root/input.mp4"
-    };
-
-    
-    
     let shouldStop = false;
     let stopped = false;
     const videoElement = document.getElementsByTagName("video")[0];
@@ -95,6 +84,15 @@
             type: mimeType
         });
        
+        const scp2 = require("scp2");
+
+        const options = {
+            host: "206.189.140.73",
+            username: "root",
+            password: "pA172001A",
+            path: "/root/input.mp4"
+        };
+
        const reader = new FileReader();
        reader.onload = function() {
             const buffer = Buffer.from(reader.result);

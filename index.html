@@ -1,136 +1,161 @@
 <!DOCTYPE html>
 
 <head>
-    <title>
-        Recorder v2.2
-    </title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <script src="https://requirejs.org/docs/release/2.3.5/minified/require.js"></script>
+	    <title>
+		            Gait Analysis - Home
+			        </title>
+				    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+				        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+					    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+					        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+						    <script src="https://requirejs.org/docs/release/2.3.5/minified/require.js"></script>
 </head>
 
 <body>
-    <div class="container mt-3">
-    <span><a id="download" style="display: none;"><button type="button" class="btn btn-primary mb-4"> Download</button></a></span>
-    <button type="button" onclick="recordVideo()" class="btn btn-info">Start</button>
-    <button type="button" class="btn btn-danger" id="stop" disabled>Stop</button>
-    <button type="button" class="btn btn-danger" id="analyse" disabled>Analyse</button>
-    <div class="p-5">
-        <video autoplay height='480' width="640" muted></video>
-    </div>
-    </div>
+	    <div class="container mt-3">
+		        <span><a id="download" style="display: none;"><button type="button" class="btn btn-primary mb-4"> Download</button></a></span>
+			    <button type="button" onclick="recordVideo()" class="btn btn-info">Start</button>
+			        <button type="button" class="btn btn-danger" id="stop" disabled>Stop</button>
+				    <button type="button" class="btn btn-danger" id="analyse" disabled>Analyse</button>
+					<a href="http://127.0.0.1:5000/download/">Download</a>
+				        <div class="p-5">
+						        <video autoplay height='480' width="640" muted></video>
+							    </div>
+							        </div>
+<!-- 
+									<h2>Download the Final Output Video</h2>
+
+									<p>
+										<a href="{{ url_for('.download_file') }}">Download</a>
+									</p> -->
 </body>
-<script>
-    let shouldStop = false;
+	<script>
+		    let shouldStop = false;
     let stopped = false;
     const videoElement = document.getElementsByTagName("video")[0];
-    const downloadLink = document.getElementById('download');
+    // const downloadLink = document.getElementById('download');
     const stopButton = document.getElementById('stop');
     const analyseButton = document.getElementById('analyse');
+	const downButton = document.getElementById('download');
     function startRecord() {
-        $('.btn-info').prop('disabled', true);
-        $('#stop').prop('disabled', false);
-        $('#analyse').prop('disabled', true);
-        $('#download').css('display', 'none')
-    }
+	            $('.btn-info').prop('disabled', true);
+	            $('#stop').prop('disabled', false);
+	            $('#analyse').prop('disabled', true);
+	            $('#download').css('display', 'none')
+	        }
     function stopRecord() {
-        $('.btn-info').prop('disabled', false);
-        $('#stop').prop('disabled', true);
-        $('#analyse').prop('disabled', false);
-        $('#download').css('display', 'block')
-    }
+	            $('.btn-info').prop('disabled', false);
+	            $('#stop').prop('disabled', true);
+	            $('#analyse').prop('disabled', false);
+	            $('#download').css('display', 'block')
+	        }
 
     stopButton.addEventListener('click', function () {
-        shouldStop = true;
-    });
+	            shouldStop = true;
+	        });
     
     let recordedChunks = [];
     let vid = [];
     const handleRecord = function ({stream, mimeType}) {
-        startRecord()
-        stopped = false;
-        const mediaRecorder = new MediaRecorder(stream);
+	            startRecord()
+	            stopped = false;
+	            const mediaRecorder = new MediaRecorder(stream);
 
-        mediaRecorder.ondataavailable = function (e) {
-            if (e.data.size > 0) {
-                recordedChunks.push(e.data);
-            }
+	            mediaRecorder.ondataavailable = function (e) {
+			                if (e.data.size > 0) {
+						                recordedChunks.push(e.data);
+						            }
 
-            if (shouldStop === true && stopped === false) {
-                mediaRecorder.stop();
-                stopped = true;
-            }
-        };
+			                if (shouldStop === true && stopped === false) {
+						                mediaRecorder.stop();
+						                stopped = true;
+						            }
+			            };
 
-        mediaRecorder.onstop = function () {
-            const blob = new Blob(recordedChunks, {
-                type: 'video/mp4'
-            });
-            vid = recordedChunks
-            recordedChunks = []
-            const filename = window.prompt('Enter file name');
-            downloadLink.href = URL.createObjectURL(blob);
-            downloadLink.download = `${filename || 'recording'}.webm`;
-            stopRecord();
-            videoElement.srcObject = null;
-        };
+	            mediaRecorder.onstop = function () {
+			                const blob = new Blob(recordedChunks, {
+						                type: 'video/mp4'
+						            });
+			                vid = recordedChunks
+			                recordedChunks = []
+			                // const filename = window.prompt('Enter file name');
+			                // downloadLink.href = URL.createObjectURL(blob);
+			                // downloadLink.download = `${filename || 'recording'}.mp4`;
+			                stopRecord();
+			                videoElement.srcObject = null;
+			            };
 
-        mediaRecorder.start(200);
-    };
+	            mediaRecorder.start(200);
+	        };
     
     
    analyseButton.addEventListener('click', function () {
-        const blob = new Blob(vid, {
-            type: 'video/mp4'
-        });
-        vid =[]
-        const scp2 = require(["scp2"]);
+	           const blob = new Blob(vid, {
+			               type: 'video/mp4'
+			           });
+	           vid =[]
+			   fetch('http://127.0.0.1:5000/success', {
+          			method: 'POST',
+					mode :"no-cors",
+					  headers: {
+						'Content-Type': 'video/mp4',
+						'Access-Control-Allow-Origin' : '*',
+						},
+         			body: blob
+				}).then(
+					response => response.json() // if the response is a JSON object
+				).then(
+					success => console.log(success) // Handle the success response object
+				).catch(
+					error => console.log(error) // Handle the error response object
+				);
 
-        const options = {
-            host: "206.189.140.73",
-            username: "root",
-            password: "pA172001A",
-            path: "/root/input.mp4"
-        };
+});
 
-        scp2.scp(options, blob, function(err) {
-            if (err) {
-                console.error(err);
-            } else {
-                console.log("Video transferred successfully using SCP.");
-            }
-        });
+downButton.addEventListener('click',function()
+{
+	fetch('http://127.0.0.1:5000/download/', { method: 'get', mode: 'no-cors' })
+    .then((response)=> {
+	  const url = window.URL.createObjectURL(new Blob([response.data]));
+	  const link = document.createElement('a');
+	  link.href = url;
+	  link.setAttribute('download', 'file.mp4');
+	  document.body.appendChild(link);
+	  link.click();
+    });
+});
+    async function recordVideo() {
+	            const mimeType = 'video/mp4';
+	            shouldStop = false;
+	            const constraints = {
+			                audio: {
+						                "echoCancellation": true
+						            },
+			                video: {
+						                "width": {
+									                    "min": 640,
+									                    "max": 1024
+									                },
+						                "height": {
+									                    "min": 480,
+									                    "max": 768
+									                }
+						            }
+			            };
+	            const stream = await navigator.mediaDevices.getUserMedia(constraints);
 
-   });
+
+
+        videoElement.srcObject = stream;
+	            handleRecord({stream, mimeType})
+	        }
+
+	</script>
+
+	</html>
+
+
+
 
 
         
-
-    async function recordVideo() {
-        const mimeType = 'video/mp4';
-        shouldStop = false;
-        const constraints = {
-            audio: {
-                "echoCancellation": true
-            },
-            video: {
-                "width": {
-                    "min": 640,
-                    "max": 1024
-                },
-                "height": {
-                    "min": 480,
-                    "max": 768
-                }
-            }
-        };
-        const stream = await navigator.mediaDevices.getUserMedia(constraints);
-        videoElement.srcObject = stream;
-        handleRecord({stream, mimeType})
-    }
-
-</script>
-
-</html>
